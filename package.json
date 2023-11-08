@@ -1,0 +1,29 @@
+{
+  "name": "evidenz-siwed-react",
+  "version": "1.0.0",
+  "description": "Utility library to enable Dapps to sign-in with Ethereum DIDs",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Sign-in",
+    "Ethereum",
+    "DID",
+    "NFT"
+  ],
+  "author": "3videnZ",
+  "license": "MIT",
+  "dependencies": {
+    "@walletconnect/modal": "^2.6.2",
+    "@web3modal/ethers5": "^3.2.0",
+    "buffer": "^6.0.3",
+    "ethers": "^5.7.2",
+    "moment": "^2.29.4",
+    "siwe": "^2.1.4"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  }
+}
