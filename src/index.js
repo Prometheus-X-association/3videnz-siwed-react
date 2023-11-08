@@ -11,10 +11,6 @@ function useWallet() {
   const web3modal = useWeb3modal()
   
   useEffect(() => {
-    console.log(error)
-  }, [ error ])
-  
-  useEffect(() => {
     if (siwe) {
       localStorage.setItem('siwe', siwe)
       const { message, signature } = JSON.parse(atob(siwe))
@@ -37,7 +33,7 @@ function useWallet() {
   useEffect(() => {
     if (isSigningIn && web3modal.isConnected) try {
       const message = createSiweMessage(web3modal.address, web3modal.chainId)
-      web3modal.signer.signMessage(message)
+      web3modal.signer?.signMessage(message)
         .then(signature => setSiwe(btoa(JSON.stringify({ message, signature }))))
         .catch(e => setError(e))
     } finally {
