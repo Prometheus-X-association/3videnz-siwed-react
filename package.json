@@ -1,5 +1,5 @@
 {
-  "name": "evidenz-siwed-react",
+  "name": "3videnz-siwed-react",
   "version": "1.0.0",
   "description": "Utility library to enable Dapps to sign-in with Ethereum DIDs",
   "main": "src/index.js",
