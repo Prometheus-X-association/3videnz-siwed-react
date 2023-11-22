@@ -6,7 +6,7 @@ import { useWeb3modal } from './web3modal.js'
 function useWallet() {
   const [ error, setError ] = useState(undefined)
   const [ session, setSession ] = useState(undefined)
-  const [ isSigningIn, setIsSigningIn ] = useState(false)
+  const [ isLoggingIn, setIsLoggingIn ] = useState(false)
   const [ siwe, setSiwe ] = useState(localStorage.getItem('siwe') || undefined)
   const web3modal = useWeb3modal()
   
@@ -31,19 +31,19 @@ function useWallet() {
   }, [ siwe ])
 
   useEffect(() => {
-    if (isSigningIn && web3modal.isConnected) try {
+    if (isLoggingIn && web3modal.isConnected) try {
       const message = createSiweMessage(web3modal.address, web3modal.chainId)
       web3modal.signer?.signMessage(message)
         .then(signature => setSiwe(btoa(JSON.stringify({ message, signature }))))
         .catch(e => setError(e))
     } finally {
-      setIsSigningIn(false)
+      setIsLoggingIn(false)
     }
-  }, [ web3modal.isConnected, isSigningIn ])
+  }, [ web3modal.isConnected, isLoggingIn ])
 
-  function signIn() {
+  function login() {
     setError(undefined)
-    setIsSigningIn(true)
+    setIsLoggingIn(true)
     if (!web3modal.isConnected) web3modal.open()
   }
 
@@ -51,8 +51,7 @@ function useWallet() {
     setSiwe(undefined)
   }
 
-  return { session, error, signIn, logout }
-
+  return { session, error, login, logout, signer: web3modal.signer }
 }
 
 export { useWallet, defineConfig }

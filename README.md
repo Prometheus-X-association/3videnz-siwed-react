@@ -1,0 +1,1 @@
+npm link ../siwed-vue-client-poc/node_modules/react
