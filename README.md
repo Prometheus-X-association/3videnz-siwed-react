@@ -117,7 +117,7 @@ export default defineConfig({ ..., verifiedIdentity })
 
 ## Usage
 
-3videnz SIWED hooks can be used in any React components
+3videnz Sign-in with Ethereum DID hooks can be used in any React components
 
 ```JSX
 
