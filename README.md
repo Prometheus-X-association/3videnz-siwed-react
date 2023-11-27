@@ -7,12 +7,12 @@
 - [Node.js](https://nodejs.org/) v18.18.0+
 - [npm](https://www.npmjs.com/) v9.8.1+
 - [React](https://react.dev/) v18.2.0+
-- [MetaMask](https://metamask.io/) or any [WalletConnect compatible Ethereum wallet](https://walletconnect.com/explorer?type=wallet&chains=eip155%3A1) with an Ethereum account
+- [MetaMask](https://metamask.io/) or any [WalletConnect compatible Ethereum wallet](https://walletconnect.com/explorer?type=wallet&chains=eip155%3A1) with an  account
 - [WalletConnect Cloud Account](https://walletconnect.com/explorer?type=wallet&chains=eip155%3A1)
 
 ## Installation
 
-The 3videnz-siwed-react package is not currently available in the public npm repository. 
+The 3videnz-siwed-react package is not yet available in the public npm repository. 
 
 To install it, start by cloning its repository:
 
@@ -20,7 +20,7 @@ To install it, start by cloning its repository:
 git clone git@github.com:Prometheus-X-association/3videnz-siwed-react.git
 ```
 
-As the library is installed locally, the React package needs to be linked to the client application dependency:
+As `3videnz-siwed-react` is installed locally, the React package needs to be linked to the client application dependency:
 
 ```bash
 cd ./3videnz-siwed-react
@@ -67,13 +67,20 @@ const timeToLive = { duration: 1, unit: 'days' } // Supported units: https://mom
 export default defineConfig({ projectId, metadata, chains, statement, timeToLive })
 ```
 
-> While this library supports any EVM compatible chain adhering to the [CAIP-25](https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-25.md) standard and its current version scope does not read or transact with configured chains it is recommended to limit to goerli configuration at the moment 
+> While 3videnz Sign-in with Ethereum DID supports any EVM compatible chain adhering to the [CAIP-25](https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-25.md) standard, it is recommended to limit to Goerli configuration at the moment 
+
+### Setup
+Import the configuration in the client application `./src/index.js` file to set up 3videnz Sign-in with Ethereum DID
+
+```javascript
+import './siwed.config.js'
+```
 
 ### Optional configurations
 
 #### Included wallets
 
-The library by default supports the exhaustive [WalletConnect compatible wallet list](https://walletconnect.com/explorer?type=wallet). The client application should limit the available wallets with the following configuration:
+By default, 3videnz Sign-in with Ethereum DID supports the exhaustive [WalletConnect compatible wallet list](https://walletconnect.com/explorer?type=wallet). The client application should limit the available wallets with the following configuration:
 
 ```javascript
 import { defineConfig } from '3videnz-siwed-react'
@@ -91,7 +98,7 @@ export default defineConfig({ ..., includeWalletIds })
 
 #### Verified identity
 
-Eventually the library will check ownership and return the content of the verified identity NFT in Prometheus-X smart-contracts. In the meantime, the returned value can be mocked using a temporary configuration:
+Eventually 3videnz Sign-in with Ethereum DID will check ownership and return the content of the verified identity NFT in Prometheus-X smart-contracts. In the meantime, the returned value can be mocked using a temporary configuration:
 
 ```javascript
 import { defineConfig } from '3videnz-siwed-react'
@@ -110,8 +117,53 @@ export default defineConfig({ ..., verifiedIdentity })
 
 ## Usage
 
-```javascript
-// TODO
+3videnz SIWED hooks can be used in any React components
+
+```JSX
+
+import { useWallet } from './evidenz-siwed'
+import { useState } from 'react'
+
+function App() {
+  const { session, error, login, logout, signer } = useWallet()
+  const [ message, setMessage ] = useState("")
+  const [ signature, setSignature ] = useState("")
+
+  const onSubmitHandler = async event => {
+    try {
+      event.preventDefault()
+      setSignature(await signer.signMessage(message))
+    } catch (e) {
+      alert(e)
+    }
+  }
+
+  const inputChangeHandler = event => {
+    setSignature("")
+    setMessage(event.target.value)
+  }
+
+  return <div>
+    { error ? <p>An error occured: {error.message}</p> : <div></div> }
+    { !session 
+      ? <button onClick={login}>Log in</button> 
+      : <div>
+          <button onClick={logout}>Log out</button>
+          <form onSubmit={onSubmitHandler}>
+            <input id="message" onChange={inputChangeHandler} />
+            <button type="submit">Sign</button>
+          </form>
+          <pre>{ signature }</pre>
+          <div>
+            <p>{ 'You are logged with session:' }</p>
+            <pre>{ JSON.stringify(session, null, 2) }</pre>
+          </div>
+        </div> 
+    }
+  </div>
+}
+
+export default App
 ```
 
 ## Contributing
