@@ -17,7 +17,12 @@ function useWallet() {
       const siweMessage = new SiweMessage(message)
       siweMessage.verify({ signature }).then(() => {
         siweMessage.did = `did:ethr:${siweMessage.address}`
-        siweMessage.verifiedIdentity = config.verifiedIdentity
+        siweMessage.certified_data = config.certified_data || {
+          credential_type: 'verifiedIdentity' ,  
+          company_name: 'This is a demonstration content',
+          px_credential: 'All these attributes are available in session.verifiedIdentity',
+          additional_info: 'It will eventually be the verified identity NFT content'
+        }
         setSession(siweMessage)
       }).catch(({ error }) => {
         // Possible errors: https://github.com/spruceid/siwe/blob/main/packages/siwe/lib/types.ts#L79
@@ -31,15 +36,16 @@ function useWallet() {
   }, [ siwe ])
 
   useEffect(() => {
-    if (isLoggingIn && web3modal.isConnected) try {
-      const message = createSiweMessage(web3modal.address, web3modal.chainId)
-      web3modal.signer?.signMessage(message)
-        .then(signature => setSiwe(btoa(JSON.stringify({ message, signature }))))
-        .catch(e => setError(e))
-    } finally {
-      setIsLoggingIn(false)
-    }
-  }, [ web3modal.isConnected, isLoggingIn ])
+    if (web3modal.address && web3modal.chainId && web3modal.signer && isLoggingIn) 
+      try {
+        const message = createSiweMessage(web3modal.address, web3modal.chainId)
+        web3modal.signer.signMessage(message)
+          .then(signature => setSiwe(btoa(JSON.stringify({ message, signature }))))
+          .catch(e => setError(e))
+      } finally {
+        setIsLoggingIn(false)
+      }
+  }, [ web3modal.address, web3modal.chainId, web3modal.signer, isLoggingIn ])
 
   function login() {
     setError(undefined)

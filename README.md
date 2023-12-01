@@ -96,7 +96,7 @@ const includeWalletIds = [
 export default defineConfig({ ..., includeWalletIds })
 ```
 
-#### Verified identity
+#### Certified data
 
 Eventually 3videnz Sign-in with Ethereum DID will check ownership and return the content of the verified identity NFT in Prometheus-X smart-contracts. In the meantime, the returned value can be mocked using a temporary configuration:
 
@@ -106,10 +106,11 @@ import { defineConfig } from '3videnz-siwed-react'
 ...
 
 // Mock the returned verified identity 
-const verifiedIdentity = {
-  title: 'This is a demonstration content',
-  description: 'All these attributes are available in session.verifiedIdentity',
-  note: 'It will eventually be the verified identity NFT content'
+const certified_data = {
+  credential_type: 'verifiedIdentity', 
+  company_name: 'This is a demonstration content',
+  px_credential: 'All these attributes are available in session.verifiedIdentity',
+  additional_info: 'It will eventually be the verified identity NFT content'
 }
 
 export default defineConfig({ ..., verifiedIdentity })
@@ -164,6 +165,30 @@ function App() {
 }
 
 export default App
+```
+
+## Session
+The login results in a session object that can be used throughout the client application.
+
+```JSON
+{
+  "domain": "mywebsite.com",
+  "address": "0x...",
+  "statement": "I accept the My Website Terms of Service: https://service.org/tos",
+  "uri": "https://mywebsite.com",
+  "version": "1",
+  "nonce": "qu0nzbXkElnhqaxlp",
+  "issuedAt": "2023-12-01T08:49:26.551Z",
+  "expirationTime": "2023-12-02T08:49:26.544Z",
+  "chainId": 5,
+  "did": "did:ethr:0x...",
+  "certified_data": {
+    "credential_type": "verifiedIdentity",
+    "company_name": "This is a demonstration content",
+    "px_credential": "All these attributes are available in session.verifiedIdentity",
+    "additional_info": "It will eventually be the verified identity NFT content"
+  }
+}
 ```
 
 ## Contributing
