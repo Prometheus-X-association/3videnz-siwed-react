@@ -1,3 +1,4 @@
+import { ethers } from 'ethers'
 import { useState, useEffect } from 'react'
 import config, { defineConfig } from './config.js'
 import { createSiweMessage, SiweMessage } from './siwe.js'
@@ -8,7 +9,16 @@ function useWallet() {
   const [ session, setSession ] = useState(undefined)
   const [ isLoggingIn, setIsLoggingIn ] = useState(false)
   const [ siwe, setSiwe ] = useState(localStorage.getItem('siwe') || undefined)
+  const [ signer, setSigner ] = useState(undefined)
   const web3modal = useWeb3modal()
+
+  useEffect(() => {
+    if (!web3modal.walletProvider) setSigner(undefined)
+    else {
+      const provider = new ethers.providers.Web3Provider(web3modal.walletProvider)
+      setSigner(provider.getSigner())
+    }
+  }, [ web3modal.walletProvider ])
   
   useEffect(() => {
     if (siwe) {
@@ -36,16 +46,16 @@ function useWallet() {
   }, [ siwe ])
 
   useEffect(() => {
-    if (web3modal.address && web3modal.chainId && web3modal.signer && isLoggingIn) 
+    if (web3modal.address && web3modal.chainId && signer && isLoggingIn) 
       try {
         const message = createSiweMessage(web3modal.address, web3modal.chainId)
-        web3modal.signer.signMessage(message)
+        signer.signMessage(message)
           .then(signature => setSiwe(btoa(JSON.stringify({ message, signature }))))
           .catch(e => setError(e))
       } finally {
         setIsLoggingIn(false)
       }
-  }, [ web3modal.address, web3modal.chainId, web3modal.signer, isLoggingIn ])
+  }, [ web3modal.address, web3modal.chainId, signer, isLoggingIn ])
 
   function login() {
     setError(undefined)
@@ -57,7 +67,7 @@ function useWallet() {
     setSiwe(undefined)
   }
 
-  return { session, error, login, logout, signer: web3modal.signer }
+  return { session, error, login, logout, signer }
 }
 
 export { useWallet, defineConfig }
