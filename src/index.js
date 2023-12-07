@@ -13,8 +13,10 @@ function useWallet() {
   const web3modal = useWeb3modal()
 
   useEffect(() => {
-    if (!web3modal.walletProvider) setSigner(undefined)
-    else {
+    if (!web3modal.walletProvider) {
+      setSigner(undefined)
+      setSiwe(undefined)
+    } else {
       const provider = new ethers.providers.Web3Provider(web3modal.walletProvider)
       setSigner(provider.getSigner())
     }
@@ -64,6 +66,7 @@ function useWallet() {
   }
 
   function logout() {
+    web3modal.disconnect()
     setSiwe(undefined)
   }
 
