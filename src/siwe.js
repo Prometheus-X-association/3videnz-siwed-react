@@ -2,8 +2,7 @@ import moment from 'moment'
 import { generateNonce, SiweMessage } from 'siwe'
 import config from './config.js'
 
-function createSiweMessage (_address, chainId) {
-  const address = _address.toLowerCase()
+function createSiweMessage (address, chainId) {
   const { statement, timeToLive } = config
   const domain = window.location.host
   const uri = window.location.origin
