@@ -1,17 +1,11 @@
+import { defineConfig as configIdentityRegistries } from './identities'
+import { defineConfig as configSiwe } from './siwe.js'
 import { defineConfig as configWeb3Modal } from './web3modal.js'
 
-let config = {
-  projectId: undefined,
-  metadata: undefined,
-  chains: undefined,
-  includeWalletIds: undefined,
-  statement: undefined,
-  timeToLive: undefined
+function defineConfig(config) {
+  configSiwe(config)
+  configWeb3Modal(config)
+  configIdentityRegistries(config)
 }
 
-function defineConfig(newConfig) {
-  config = newConfig
-  configWeb3Modal(newConfig)
-}
-
-export { config as default, defineConfig }
+export { defineConfig }

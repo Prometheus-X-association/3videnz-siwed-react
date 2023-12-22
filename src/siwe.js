@@ -1,6 +1,11 @@
 import moment from 'moment'
-import { generateNonce, SiweMessage } from 'siwe'
-import config from './config.js'
+import { generateNonce, SiweMessage, SiweError } from 'siwe'
+
+let config = {}
+
+function defineConfig({ statement, timeToLive }) {
+  config = { statement, timeToLive }
+}
 
 function createSiweMessage (address, chainId) {
   const { statement, timeToLive } = config
@@ -12,4 +17,4 @@ function createSiweMessage (address, chainId) {
   return new SiweMessage({ domain, address, statement, uri, nonce, version, chainId, expirationTime }).prepareMessage()
 }
 
-export { createSiweMessage, SiweMessage }
+export { defineConfig, createSiweMessage, SiweMessage, SiweError }

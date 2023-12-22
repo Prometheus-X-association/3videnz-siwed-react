@@ -96,9 +96,28 @@ const includeWalletIds = [
 export default defineConfig({ ..., includeWalletIds })
 ```
 
+#### Identity registries
+
+3videnz Sign-in with Ethereum DID can check ownership of verified identities in [3videnz-RevealableConsensualSBT](https://github.com/Prometheus-X-association/3videnz-RevealableConsensualSBT) smart contracts. When found the certified data is returned in the session otherwise the login will fail.
+
+```javascript
+import { defineConfig } from '3videnz-siwed-react'
+
+...
+
+// Mock the returned verified identity 
+const identityRegistries = [{
+  type: 'EvidenzRevealableConsensualSBT',
+  chainId: '0xa869',
+  address: '0x9547d811378dF0B42ceBAee32082725F8647CfF5'
+}]
+
+export default defineConfig({ ..., identityRegistries })
+```
+
 #### Certified data
 
-Eventually 3videnz Sign-in with Ethereum DID will check ownership and return the content of the verified identity NFT in Prometheus-X smart-contracts. In the meantime, the returned value can be mocked using a temporary configuration:
+Alternatively 3videnz Sign-in with Ethereum DID can be mocked to return a configured value value.
 
 ```javascript
 import { defineConfig } from '3videnz-siwed-react'

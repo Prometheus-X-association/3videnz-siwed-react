@@ -1,9 +1,9 @@
 import { ethers } from 'ethers'
 import { useState, useEffect } from 'react'
-import config, { defineConfig } from './config.js'
-import { createSiweMessage, SiweMessage } from './siwe.js'
+import { defineConfig } from './config.js'
+import { createSiweMessage, SiweMessage, SiweError } from './siwe.js'
 import { useWeb3modal } from './web3modal.js'
-import { SiweError } from 'siwe'
+import { fetchIdentity, connectRegistries } from './identities'
 
 function useWallet() {
   const [ error, _setError ] = useState(undefined)
@@ -26,48 +26,52 @@ function useWallet() {
     }
   }
 
+  // Handles wallet connect/disconnect events
   useEffect(() => {
     if (!web3modal.walletProvider) {
       setSigner(undefined)
       setSiwe(undefined)
+      connectRegistries(undefined)
     } else {
       const provider = new ethers.providers.Web3Provider(web3modal.walletProvider)
       setSigner(provider.getSigner())
+      connectRegistries(provider.getSigner())
     }
   }, [ web3modal.walletProvider ])
   
+  // Verify signed message, NFT ownerships and sets the certified data
   useEffect(() => {
-    if (siwe) {
-      localStorage.setItem('siwe', siwe)
-      const { message, signature } = JSON.parse(atob(siwe))
-      const siweMessage = new SiweMessage(message)
-      siweMessage.verify({ signature }).then(() => {
-        siweMessage.did = `did:ethr:${siweMessage.address}`
-        siweMessage.certified_data = config.certified_data || {
-          credential_type: 'verifiedIdentity' ,  
-          company_name: 'This is a demonstration content',
-          px_credential: 'All these attributes are available in session.verifiedIdentity',
-          additional_info: 'It will eventually be the verified identity NFT content'
-        }
-        setSession(siweMessage)
-      }).catch(({ error }) => {
-        setError(error) 
-        setSession(undefined)
-      }).finally(() => {
-        setIsLoggingIn(false)
-      })
-    } else {
+    if (!siwe)  {
       localStorage.removeItem('siwe')
       setSession(undefined)
       setIsLoggingIn(false)
+    } else if (signer) {
+      localStorage.setItem('siwe', siwe)
+      const { message, signature } = JSON.parse(atob(siwe))
+      const siweMessage = new SiweMessage(message)
+      siweMessage.verify({ signature })
+        .then(async () => {
+          siweMessage.did = `did:ethr:${siweMessage.address}`
+          const certified_data = await fetchIdentity(siweMessage.address)
+          if (certified_data) siweMessage.certified_data = certified_data
+          setSession(siweMessage)
+        })
+        .catch((ex) => {
+          setError(ex instanceof SiweError ? ex.error : ex)
+          setSession(undefined)
+        })
+        .finally(() => setIsLoggingIn(false))
     }
-  }, [ siwe ])
+  }, [ siwe, signer ])
 
+  // Signs the SIWE message during login when signer is available
   useEffect(() => {
     if (web3modal.chainId && signer && isLoggingIn) signer.getAddress()
-      .then(address => createSiweMessage(address, web3modal.chainId))
-      .then(async message => ({ message, signature: await signer.signMessage(message) }))
-      .then(({ message, signature }) => setSiwe(btoa(JSON.stringify({ message, signature }))))
+      .then(async address => {
+        const message = createSiweMessage(address, web3modal.chainId)
+        const signature = await signer.signMessage(message)
+        setSiwe(btoa(JSON.stringify({ message, signature })))
+      })
       .catch(e => {
         setError(e)
         setIsLoggingIn(false)
