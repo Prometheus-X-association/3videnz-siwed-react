@@ -51,11 +51,11 @@ const metadata = { name: 'My Website', description: 'My Website description', ur
 
 // Set the client application supported chains
 const chains = [{
-  chainId: 5,
-  name: 'Goerli',
-  currency: 'ETH',
-  explorerUrl: 'https://goerli.etherscan.io/',
-  rpcUrl: 'https://ethereum-goerli.publicnode.com'
+  chainId: 43113,
+  name: 'Avalanche Fuji Testnet',
+  currency: 'AVAX',
+  explorerUrl: 'https://testnet.snowtrace.io/',
+  rpcUrl: 'https://avalanche-fuji-c-chain.publicnode.com'
 }]
 
 // Define the statement signed by the end-user during login
@@ -67,7 +67,7 @@ const timeToLive = { duration: 1, unit: 'days' } // Supported units: https://mom
 export default defineConfig({ projectId, metadata, chains, statement, timeToLive })
 ```
 
-> While 3videnz Sign-in with Ethereum DID supports any EVM compatible chain adhering to the [CAIP-25](https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-25.md) standard, it is recommended to limit to Goerli configuration at the moment 
+> While 3videnz Sign-in with Ethereum DID supports configuring multiple EVM compatible chains adhering to the [CAIP-25](https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-25.md) standard, it is recommended to limit to a signle network at the moment 
 
 ### Setup
 Import the configuration in the client application `./src/index.js` file to set up 3videnz Sign-in with Ethereum DID
