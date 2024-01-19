@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { defineConfig } from './config.js'
 import { createSiweMessage, SiweMessage, SiweError } from './siwe.js'
 import { useWeb3modal } from './web3modal.js'
-import { fetchIdentity, connectRegistries } from './identities'
+import { fetchIdentity } from './identities'
 
 function useWallet() {
   const [ error, _setError ] = useState(undefined)
@@ -31,11 +31,9 @@ function useWallet() {
     if (!web3modal.walletProvider) {
       setSigner(undefined)
       setSiwe(undefined)
-      connectRegistries(undefined)
     } else {
       const provider = new ethers.providers.Web3Provider(web3modal.walletProvider)
       setSigner(provider.getSigner())
-      connectRegistries(provider.getSigner())
     }
   }, [ web3modal.walletProvider ])
   

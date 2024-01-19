@@ -96,20 +96,52 @@ const includeWalletIds = [
 export default defineConfig({ ..., includeWalletIds })
 ```
 
-#### Identity registries
+### Custom wallets
 
-3videnz Sign-in with Ethereum DID can check ownership of verified identities in [3videnz-RevealableConsensualSBT](https://github.com/Prometheus-X-association/3videnz-RevealableConsensualSBT) smart contracts. When found the certified data is returned in the session otherwise the login will fail.
+Alternatively you can use [WalletConnect](https://walletconnect.com/) compatible custom wallets. 
 
 ```javascript
 import { defineConfig } from '3videnz-siwed-react'
 
 ...
 
-// Mock the returned verified identity 
+// Override default recommended wallets that are fetched from WalletConnect explorer
+const includeWalletIds = [{
+  id: 'mywallet.cloud',
+  name: 'mywallet.cloud',
+  webapp_link: 'https://staging.mywallet.cloud/',
+  image_url: '/mywallet-icon-512.png'
+}]
+
+export default defineConfig({ ..., includeWalletIds })
+```
+
+> Note the image file must be included in the public resources of the client application. Mywallet's icon can be found in 'public' folder.
+
+> The demo configuration uses mywallet's staging environment URL. Production URL is https://app.mywallet.cloud/
+
+#### Identity registries
+
+3videnz Sign-in with Ethereum DID can check ownership of verified identities in smart-contract registries. When found the certified data is returned in the session otherwise the login will fail.
+
+Smart-contract registries can be:
+-  [3videnz-RevealableConsensualSBT](https://github.com/Prometheus-X-association/3videnz-RevealableConsensualSBT) - checks ownership of a collection token
+-  [Prometheus-X-catalogs-directory](https://github.com/Prometheus-X-association/Prometheus-X-catalogs-directory) - checks ownership of a token among all the collections in the directory
+
+```javascript
+import { defineConfig } from '3videnz-siwed-react'
+
+...
+
+// Configure the registries 
 const identityRegistries = [{
   type: 'EvidenzRevealableConsensualSBT',
   chainId: '0xa869',
-  address: '0x9547d811378dF0B42ceBAee32082725F8647CfF5'
+  address: '0x370C1fbef3749d7FdA233f4383753EC416402dD5'
+}, {
+  type: 'PrometheusXCatalogsDirectory',
+  chainId: '0xa869',
+  address: '0x4C42a8B9E97a32c3b8a6422ebaF9A7928970E64b'
 }]
 
 export default defineConfig({ ..., identityRegistries })
