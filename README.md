@@ -12,10 +12,23 @@
 
 ## Installation
 
-The 3videnz-siwed-react package is not yet available in the public npm repository. 
+The 3videnz-siwed-react package is not yet available in the public npm repository.
 
-To install it, start by cloning its repository:
+### From GitHub
+```bash
+npm install github:Prometheus-X-association/3videnz-siwed-react
+```
 
+> Note the repository being private you will be prompted to authenticate with your GitHub credentials and need to be part of Prometheus-X-association organization to install the package.
+
+In order to run npm install from Docker, you need to [create an SSH key in GitHub](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account) and use it in the Dockerfile:
+
+```Dockerfile
+RUN mkdir -p -m 0600 ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
+RUN ssh-agent sh -c 'echo $SSH_KEY | base64 -d | ssh-add - ; npm install'
+```
+
+### Locally
 ```bash
 git clone git@github.com:Prometheus-X-association/3videnz-siwed-react.git
 ```
@@ -141,7 +154,7 @@ const identityRegistries = [{
 }, {
   type: 'PrometheusXCatalogsDirectory',
   chainId: '0xa869',
-  address: '0x4C42a8B9E97a32c3b8a6422ebaF9A7928970E64b'
+  address: '0x9A4821b0F5b6343AB27297cf96E8B4c6b8464136'
 }]
 
 export default defineConfig({ ..., identityRegistries })
@@ -173,7 +186,7 @@ export default defineConfig({ ..., verifiedIdentity })
 
 ```JSX
 
-import { useWallet } from './evidenz-siwed'
+import { useWallet } from '3videnz-siwed'
 import { useState } from 'react'
 
 function App() {
