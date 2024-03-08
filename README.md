@@ -118,15 +118,15 @@ import { defineConfig } from '3videnz-siwed-react'
 
 ...
 
-// Override default recommended wallets that are fetched from WalletConnect explorer
-const includeWalletIds = [{
+// Adds custom wallets to WalletConnect modal
+const customWallets  = [{
   id: 'mywallet.cloud',
   name: 'mywallet.cloud',
   webapp_link: 'https://staging.mywallet.cloud/',
   image_url: '/mywallet-icon-512.png'
 }]
 
-export default defineConfig({ ..., includeWalletIds })
+export default defineConfig({ ..., customWallets })
 ```
 
 > Note the image file must be included in the public resources of the client application. Mywallet's icon can be found in 'public' folder.
