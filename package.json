@@ -15,8 +15,8 @@
   "author": "3videnZ",
   "license": "MIT",
   "dependencies": {
-    "@walletconnect/modal": "^2.6.2",
-    "@web3modal/ethers5": "^3.4.0",
+    "@walletconnect/modal": "2.6.2",
+    "@web3modal/ethers5": "3.4.0",
     "buffer": "^6.0.3",
     "ethers": "^5.7.2",
     "moment": "^2.29.4",
